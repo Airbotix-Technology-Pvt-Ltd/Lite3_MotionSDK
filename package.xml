@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>lite3_custom_gait</name>
+  <version>0.1.0</version>
+  <description>
+    Custom gait development package for Jueying Lite3.
+    Provides a MotionSDK-style API (SimSender / SimReceiver / SimTimer)
+    that talks to MuJoCo simulation via ROS2, letting you test your own
+    gait algorithms in sim before deploying to the real robot.
+  </description>
+
+  <maintainer email="you@example.com">your_name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>drdds</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

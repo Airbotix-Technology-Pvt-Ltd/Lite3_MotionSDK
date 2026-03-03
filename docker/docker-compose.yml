@@ -1,0 +1,23 @@
+services:
+
+  lite3_sim_gait:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: lite3_sim_gait
+    container_name: lite3_sim_gait
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=1
+      - QT_X11_NO_MITSHM=1
+      # Force software OpenGL — works without NVIDIA Docker / GPU passthrough
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - GALLIUM_DRIVER=llvmpipe
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ../src:/workspace/custom_gait_ws/src/lite3_custom_gait/src:rw
+      - ../include:/workspace/custom_gait_ws/src/lite3_custom_gait/include:rw
+    stdin_open: true
+    tty: true
+    command: tail -f /dev/null

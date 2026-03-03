@@ -1,47 +1,44 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10)
+project(lite3_custom_gait)
 
-project(Lite_motion)
-SET(BUILD_PLATFORM "x86" CACHE STRING "select build cpu type")
-if (BUILD_PLATFORM STREQUAL arm)
-  message("this is arm platform")
-  SET(CMAKE_C_COMPILER "aarch64-linux-gnu-gcc")
-  SET(CMAKE_CXX_COMPILER "aarch64-linux-gnu-g++") 
-else()
-  message("this is x86 platform")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_definitions(-w)
+
+# Build platform: x86 (default) or arm
+set(BUILD_PLATFORM "x86" CACHE STRING "Target platform: x86 or arm")
+
+if(BUILD_PLATFORM STREQUAL "arm")
+  set(CMAKE_C_COMPILER   "aarch64-linux-gnu-gcc")
+  set(CMAKE_CXX_COMPILER "aarch64-linux-gnu-g++")
 endif()
 
-set(CMAKE_BUILD_TYPE Release)
-set(SRC_DIR_LIST "." src)
-add_definitions(-w) # warning ignore
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CAMKE_CXX_FLAGS}")
+# ── ROS2 dependencies ──────────────────────────────────────────────────────────
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp       REQUIRED)
+find_package(drdds        REQUIRED)
 
-foreach(VAR ${SRC_DIR_LIST})
-  set(TEMP)
-  aux_source_directory(./src/ TEMP)
-  set(SRC_LIST ${RCS_SRC_LIST} ${TEMP})
-endforeach(VAR)
-
+# ── Include paths ──────────────────────────────────────────────────────────────
 include_directories(
-  ./include/
-  ./include/common/
-  ./lib/eigen3
+  include
 )
 
-link_directories(
-  ./lib/
+# ── Executable ─────────────────────────────────────────────────────────────────
+add_executable(gait_runner src/main.cpp)
+
+ament_target_dependencies(gait_runner
+  rclcpp
+  drdds
 )
 
-add_executable(${PROJECT_NAME} "main.cpp"${SRC_LIST})
-# 链接动态库target_link_libraries(myprogram /path/to/lib/libfoo.so)
+target_link_libraries(gait_runner
+  -lpthread
+  -lm
+)
 
+# ── Install ────────────────────────────────────────────────────────────────────
+install(TARGETS gait_runner
+  DESTINATION lib/${PROJECT_NAME}
+)
 
- # 外部用cmake . -DBUILD_PLATFORM=arm进行值传入，便可以执行不同的逻辑
-if (BUILD_PLATFORM STREQUAL arm)
-  target_link_libraries(${PROJECT_NAME} libdeeprobotics_legged_sdk_aarch64.so)
-else()
-  target_link_libraries(${PROJECT_NAME} libdeeprobotics_legged_sdk_x86_64.so)
-endif()
-
-target_link_libraries(${PROJECT_NAME} -lpthread -lm -lrt -ldl -lstdc++)
-
-
+ament_package()
