@@ -1,42 +1,24 @@
-# Lite3 Custom Gait — Sim Testbed
+# Lite3 Custom Gait Hub (Airbotix Fork)
 
-Write your own gait algorithms and test them in **MuJoCo simulation** before touching the real robot.
-
-The API is deliberately identical to **Lite3_MotionSDK** so porting to hardware is a one-line change.
+This repository is optimized for **Kinematic Gait Research** and **MuJoCo Simulation** for the Lite3 quadruped platform.
 
 ---
 
-## ✅ Work Accomplished (Final Status)
+### 🌐 Project Central Hubs
+- [**Master Hub (Root)**](https://github.com/Airbotix-Technology-Pvt-Ltd/Lite3Robot): Mission, specialized workspaces, and organizational identity.
+- [**Contributors Hub**](../Contributors.md): Full technical attribution for the Airbotix development team.
 
-This testbed has been enhanced with several robust features for Lite3 development:
+---
 
-- **Advanced Keyboard Controller**: Fixed TTY issues using direct `/dev/tty` access. Features WASD movement, speed scaling (`+/-`), and mode toggling.
-- **Stair Climbing (Crawl Gait)**: Implemented a research-backed tripod Crawl gait specifically for climbing. It uses one-leg-at-a-time movement with high knee lift (`1.20rad`) for maximum stability.
-- **Manual Pitch Control**: Added keys (**F** for lean, **R** for reset) to manually adjust body pitch. This helps keep front feet grounded on steep slopes.
-- **State Machine Polish**: Added `Hold()` state for idle stability (no more footing in place) and smooth phase transitions when starting movement.
-- **Decoupled Workflow**: Modified Docker setup to allow MuJoCo and the Gait Runner to be restarted independently without a container rebuild.
+## 🛠️ Technical Contributions (Airbotix)
 
-## ⚠️ Current Status & Limitations
-- **Flat Surfaces Only**: The current **Kinematic Gait** (Trot/Crawl) is tuned for stability on **Flat Surfaces only**. 
-- **Stairs/Slopes**: While Crawl and Pitch Lean are implemented, they are **not robust for steep slopes or actual stair traversal**. This is the primary reason for moving to the **MPC/WBC** (Dynamic) architecture.
+The following technical components have been implemented for this stack:
 
-## 📁 Folder Structure
-
-```
-Lite3_custom_gait/
-├── include/
-│   ├── sim_robot_types.h   ← RobotData / RobotCmd structs
-│   ├── sim_receiver.h      ← Receives data from MuJoCo (ROS2)
-│   ├── sim_sender.h        ← Sends commands to MuJoCo (ROS2)
-│   ├── sim_timer.h         ← 1ms real-time timer
-│   ├── custom_gait.h       ← Stable Crawl & Trot implementations
-│   └── keyboard_controller.h ← Direct TTY keyboard logic
-├── src/
-│   └── main.cpp            ← Gait State Machine & Logic
-├── docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml  ← Configured for decoupled execution
-```
+- **Crawl Gait (Tripod)**: Implemented a tripod Crawl gait research for stable movement on stairs, utilizing high knee lift (`1.20rad`).
+- **Keyboard Controller**: Created a direct `/dev/tty` access controller with WASD movement, speed scaling, and mode toggling.
+- **Manual Pitch (Lean)**: Added manual body pitch adjustments (**F** for lean, **R** for reset) for slope stability research.
+- **State Machine Integration**: Added `Hold()` state for idle stability and smooth phase transitions when initiating movement.
+- **Docker Workflow**: Modified the Docker setup to allow MuJoCo and the Gait Runner to be restarted independently.
 
 ---
 
@@ -65,12 +47,9 @@ Lite3_custom_gait/
 
 ---
 
-## 📋 MPC/WBC Transition Notice
-This repository serves as a **Kinematic Gait Reference**. For advanced Dynamic Control (Centroidal MPC + Whole Body Control), development has moved to the `quadruped-robot` repository which implements QP-based force optimization specifically for the Lite3 robot platform.
+## ❤️ Credits & Tribute
+We pay tribute to **DeepRobotics** for providing the foundational `Lite3_MotionSDK` and robot models.
 
 ---
-
-## 🛡️ Safety Notes
-- Press **Ctrl-C** at any time → all joints enter **damping mode** (fixed KD=2.0). 
-- The `RobotStateInit()` call applies base damping on startup.
-- `JointDamping()` is used as the shutdown hook to ensure the robot collapses safely.
+*Airbotix Technology Pvt Ltd - Lite3 P2P Autonomous Navigation Project*
+*See our [**Contributors Hub**](../Contributors.md) for full project attribution.*
